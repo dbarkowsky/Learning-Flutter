@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app/StartScreen.dart';
+import 'package:quiz_app/Quiz.dart';
 
 void main() {
   runApp(const QuizApp());
@@ -19,7 +19,7 @@ class QuizApp extends StatelessWidget {
       ),
       home: DefaultTextStyle(
         style: TextStyle(),
-        child: StartScreen(),
+        child: Quiz(),
       ),
     );
   }

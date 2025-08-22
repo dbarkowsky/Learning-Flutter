@@ -13,21 +13,22 @@ class StartScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         spacing: 50,
         children: [
-          Image.asset('assets/images/quiz-logo.png'),
+          Image.asset('assets/images/quiz-logo.png', color: Color.fromRGBO(255, 255, 255, 0.498),), // This apparently more performant than Opacity widget
           const Text(
             "Learn Flutter the fun way!",
-            style: TextStyle(fontSize: 26, color: Colors.white),
+            style: TextStyle(fontSize: 26),
           ),
-          OutlinedButton(
+          OutlinedButton.icon(
             onPressed: () {},
             style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.white,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadiusGeometry.all(Radius.circular(5)),
               ),
             ),
-            child: Text("Start Quiz"),
+            icon: const Icon(Icons.flag_outlined),
+            label: Text("Start Quiz"),
           ),
         ],
       ),
