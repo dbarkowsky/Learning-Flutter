@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app/data/questions.dart';
 
 class QuestionsScreen extends StatefulWidget {
   const QuestionsScreen({super.key});
@@ -10,15 +11,40 @@ class QuestionsScreen extends StatefulWidget {
 
 
 class _QuestionsScreenState extends State<QuestionsScreen> {
+  int questionIndex = 0;
+
+  void answerQuestion() {
+    setState(() {
+      if (questionIndex < questions.length - 1) {
+        // If there are more questions, increment the index
+        questionIndex++;
+      } else {
+        // If no more questions, reset to the first question or handle end of quiz
+        questionIndex = 0; // Reset to first question for simplicity
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context){
     return Container(
-      padding: const EdgeInsets.all(20),
-      child: Column(  // ✅ Wrap in Column
+      padding: const EdgeInsets.symmetric(horizontal: 50),
+      color: Colors.deepPurple,
+      child: Column(  
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 20,
         children: [
-          Text("Question goes here"),
-          Spacer(), // ✅ Now Spacer works
-          Text("Answer options here"),
+          Text(questions[questionIndex].question, textAlign: TextAlign.center, style: TextStyle(fontSize: 24),),
+          SizedBox(height: 30),
+          ...questions[questionIndex].getShuffledAnswers().map((answer) {
+            return ElevatedButton(
+              onPressed: () {
+                answerQuestion();
+              },
+              child: Text(answer, textAlign: TextAlign.center,),
+            );
+          })
         ],
       ),
     );
