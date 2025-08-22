@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app/StartScreen.dart';
-
 
 class QuestionsScreen extends StatefulWidget {
   const QuestionsScreen({super.key});
@@ -14,6 +12,15 @@ class QuestionsScreen extends StatefulWidget {
 class _QuestionsScreenState extends State<QuestionsScreen> {
   @override
   Widget build(BuildContext context){
-    return StartScreen();
+    return Container(
+      padding: const EdgeInsets.all(20),
+      child: Column(  // ✅ Wrap in Column
+        children: [
+          Text("Question goes here"),
+          Spacer(), // ✅ Now Spacer works
+          Text("Answer options here"),
+        ],
+      ),
+    );
   }
 }
