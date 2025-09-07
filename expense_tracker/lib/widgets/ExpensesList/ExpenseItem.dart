@@ -12,6 +12,7 @@ class ExpenseItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(ex.title),
             const SizedBox(height: 4,),
@@ -21,9 +22,9 @@ class ExpenseItem extends StatelessWidget {
                 Text('\$${ex.amount.toStringAsFixed(2)}'),
                 Row(
                   children: [
-                    Icon(Icons.access_alarm),
+                    Icon(ex.getIcon()),
                     const SizedBox(width: 8,),
-                    Text(ex.date.toString()),
+                    Text(ex.getDate()),
                   ],
                 ),
               ],
