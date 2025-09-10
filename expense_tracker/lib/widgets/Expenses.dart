@@ -28,10 +28,19 @@ class _ExpensesState extends State {
     ),
   ];
 
-  void _openAddExpenseOverlay() {
-    showModalBottomSheet(context: context, builder: (ctx) {
-      return const NewExpense();
+  void _addExpense(Expense ex) {
+    setState(() {
+      _registeredExpenses.add(ex);
     });
+  }
+
+  void _openAddExpenseOverlay() {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) {
+        return NewExpense(onAddExpense: _addExpense);
+      },
+    );
   }
 
   @override
@@ -39,7 +48,12 @@ class _ExpensesState extends State {
     return Scaffold(
       appBar: AppBar(
         title: Text('Expense Tracker'),
-        actions: [IconButton(onPressed: _openAddExpenseOverlay, icon: const Icon(Icons.add))],
+        actions: [
+          IconButton(
+            onPressed: _openAddExpenseOverlay,
+            icon: const Icon(Icons.add),
+          ),
+        ],
       ),
       body: Column(
         children: [

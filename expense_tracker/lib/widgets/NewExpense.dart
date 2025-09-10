@@ -1,10 +1,10 @@
-import 'dart:math';
-
 import 'package:expense_tracker/models/Expense.dart';
 import 'package:flutter/material.dart';
 
 class NewExpense extends StatefulWidget {
-  const NewExpense({super.key});
+  const NewExpense({super.key, required this.onAddExpense});
+
+  final void Function(Expense ex) onAddExpense;
 
   @override
   State<NewExpense> createState() {
@@ -40,6 +40,40 @@ class _NewExpenseState extends State<NewExpense> {
         _selectedDate = pickedDate;
       }
     });
+  }
+
+  void _submitExpenseData() {
+    // Adding some validation
+    final enteredAmount = double.tryParse(_amountController.text);
+    final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
+    if (_titleController.text.trim().isEmpty || amountIsInvalid) {
+      // Show this dialog on failure then return.
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          content: Text("Must have a title and valid amount."),
+          title: Text("Validation Error"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+              child: Text("Close"),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+    // Save the entry.
+    widget.onAddExpense(
+      Expense(
+        title: _titleController.text,
+        amount: enteredAmount,
+        date: _selectedDate,
+        category: _selectedCategory,
+      ),
+    );
   }
 
   @override
@@ -81,7 +115,7 @@ class _NewExpenseState extends State<NewExpense> {
               ),
             ],
           ),
-          const SizedBox(height: 16,),
+          const SizedBox(height: 16),
           Row(
             children: [
               DropdownButton(
@@ -110,7 +144,10 @@ class _NewExpenseState extends State<NewExpense> {
                 },
                 child: Text("Cancel"),
               ),
-              ElevatedButton(onPressed: () {}, child: Text("Save")),
+              ElevatedButton(
+                onPressed: _submitExpenseData,
+                child: Text("Save"),
+              ),
             ],
           ),
         ],
