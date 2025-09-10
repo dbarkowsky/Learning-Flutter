@@ -34,12 +34,19 @@ class _ExpensesState extends State {
     });
   }
 
+  void _removeExpense(Expense ex){
+    setState(() {
+      _registeredExpenses.remove(ex);
+    });
+  }
+
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
       context: context,
       builder: (ctx) {
         return NewExpense(onAddExpense: _addExpense);
       },
+      isScrollControlled: true,
     );
   }
 
@@ -59,7 +66,7 @@ class _ExpensesState extends State {
         children: [
           Text("My Expenses"),
           // Why Expanded? Column doesn't handle size of list otherwise.
-          Expanded(child: ExpensesList(expenses: _registeredExpenses)),
+          Expanded(child: ExpensesList(expenses: _registeredExpenses, onRemoveExpense: _removeExpense,)),
         ],
       ),
     );
