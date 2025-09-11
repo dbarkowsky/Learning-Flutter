@@ -34,10 +34,24 @@ class _ExpensesState extends State {
     });
   }
 
-  void _removeExpense(Expense ex){
+  void _removeExpense(Expense ex) {
+    // Track where expense was in case we want to undo
+    int expenseIndex = _registeredExpenses.indexOf(ex);
     setState(() {
       _registeredExpenses.remove(ex);
     });
+    // Another util from Flutter
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Expense removed"),
+        duration: Duration(seconds: 3),
+        action: SnackBarAction(label: "Undo", onPressed: (){
+          setState(() {
+            _registeredExpenses.insert(expenseIndex, ex);
+          });
+        }),
+      ),
+    );
   }
 
   void _openAddExpenseOverlay() {
@@ -52,6 +66,15 @@ class _ExpensesState extends State {
 
   @override
   Widget build(BuildContext context) {
+    Widget mainContent = Center(child: Text("No expenses found."));
+
+    if (_registeredExpenses.isNotEmpty) {
+      mainContent = ExpensesList(
+        expenses: _registeredExpenses,
+        onRemoveExpense: _removeExpense,
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Expense Tracker'),
@@ -66,7 +89,7 @@ class _ExpensesState extends State {
         children: [
           Text("My Expenses"),
           // Why Expanded? Column doesn't handle size of list otherwise.
-          Expanded(child: ExpensesList(expenses: _registeredExpenses, onRemoveExpense: _removeExpense,)),
+          Expanded(child: mainContent),
         ],
       ),
     );
