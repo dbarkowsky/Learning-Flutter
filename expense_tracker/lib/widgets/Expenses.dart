@@ -1,6 +1,7 @@
 import 'package:expense_tracker/models/Expense.dart';
 import 'package:expense_tracker/widgets/ExpensesList/ExpensesList.dart';
 import 'package:expense_tracker/widgets/NewExpense.dart';
+import 'package:expense_tracker/widgets/chart/Chart.dart';
 import 'package:flutter/material.dart';
 
 class Expenses extends StatefulWidget {
@@ -87,7 +88,7 @@ class _ExpensesState extends State {
       ),
       body: Column(
         children: [
-          Text("My Expenses"),
+          Chart(expenses: _registeredExpenses,),
           // Why Expanded? Column doesn't handle size of list otherwise.
           Expanded(child: mainContent),
         ],
