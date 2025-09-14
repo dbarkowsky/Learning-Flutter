@@ -62,11 +62,15 @@ class _ExpensesState extends State {
         return NewExpense(onAddExpense: _addExpense);
       },
       isScrollControlled: true,
+      useSafeArea: true, // Determined by device
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    // For reactive main content
+    Size screen = MediaQuery.of(context).size;
+
     Widget mainContent = Center(child: Text("No expenses found."));
 
     if (_registeredExpenses.isNotEmpty) {
@@ -76,6 +80,8 @@ class _ExpensesState extends State {
       );
     }
 
+    // NOTE: Scaffold has default max height and width of screen size
+    // So that constrains the Row and Column widgets inside it, that have infinite maximums in theory.
     return Scaffold(
       appBar: AppBar(
         title: Text('Expense Tracker'),
@@ -86,10 +92,16 @@ class _ExpensesState extends State {
           ),
         ],
       ),
-      body: Column(
+      body: screen.width < 600 ? Column(
         children: [
           Chart(expenses: _registeredExpenses,),
           // Why Expanded? Column doesn't handle size of list otherwise.
+          // Also restricts to available space. Otherwise list will be infinite height
+          Expanded(child: mainContent),
+        ],
+      ) : Row(
+        children: [
+          Expanded(child: Chart(expenses: _registeredExpenses,)),
           Expanded(child: mainContent),
         ],
       ),

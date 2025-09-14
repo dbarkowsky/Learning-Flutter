@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter/services.dart';
 import 'package:expense_tracker/widgets/Expenses.dart';
 
 ColorScheme colourScheme = ColorScheme.fromSeed(
@@ -44,6 +44,22 @@ ThemeData darkTheme = ThemeData.dark().copyWith(
 );
 
 void main() {
+  // This would keep the app in portrait mode only
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  // ]).then((_) {
+  //   runApp(
+  //     MaterialApp(
+  //       home: Expenses(),
+  //       theme: lightTheme,
+  //       darkTheme: darkTheme,
+  //       themeMode: ThemeMode.dark, // Can be light, dark or system
+  //     ),
+  //   );
+  // });
+
+  // But we want to allow both orientations
   runApp(
     MaterialApp(
       home: Expenses(),
