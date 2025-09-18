@@ -9,3 +9,7 @@ This is a simple app that rolls a single die.
 ## `quiz_app`
 
 Another simple app that quizzes you on Flutter questions.
+
+## `expense_tracker`
+
+An app where you add expense entries.
