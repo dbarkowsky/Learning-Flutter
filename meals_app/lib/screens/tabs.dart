@@ -22,10 +22,21 @@ class _TabsScreenState extends State<TabsScreen> {
     setState(() {
       if (isExisting) {
         _favouriteMeals.remove(meal);
+        _showMessage('Meal removed from favourites.');
       } else {
         _favouriteMeals.add(meal);
+        _showMessage('Meal added to favourites.');
       }
     });
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
   }
 
   void _selectPage(int index) {
