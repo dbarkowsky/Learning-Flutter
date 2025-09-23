@@ -18,7 +18,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
   void _toggleMealFavouriteStatus(Meal meal) {
     final isExisting = _favouriteMeals.contains(meal);
-    print(isExisting);
+
     setState(() {
       if (isExisting) {
         _favouriteMeals.remove(meal);
@@ -36,15 +36,22 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget activePage = CategoriesScreen(onToggleFavourite: _toggleMealFavouriteStatus,);
+    Widget activePage = CategoriesScreen(
+      onToggleFavourite: _toggleMealFavouriteStatus,
+    );
     String activePageTitle = 'Categories';
     switch (_selectedPageIndex) {
       case 0:
-        activePage = CategoriesScreen(onToggleFavourite: _toggleMealFavouriteStatus ,);
+        activePage = CategoriesScreen(
+          onToggleFavourite: _toggleMealFavouriteStatus,
+        );
         activePageTitle = 'Categories';
         break;
       case 1:
-        activePage = MealsScreen(meals: _favouriteMeals, onToggleFavourite: _toggleMealFavouriteStatus,);
+        activePage = MealsScreen(
+          meals: _favouriteMeals,
+          onToggleFavourite: _toggleMealFavouriteStatus,
+        );
         activePageTitle = 'Favourites';
         break;
       default:
