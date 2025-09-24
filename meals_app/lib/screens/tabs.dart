@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meals_app/models/meal.dart';
+import 'package:meals_app/providers/favourites_provider.dart';
 import 'package:meals_app/screens/categories_screen.dart';
 import 'package:meals_app/screens/filters_screen.dart';
 import 'package:meals_app/screens/meals_screen.dart';
@@ -18,7 +18,6 @@ class TabsScreen extends ConsumerStatefulWidget {
 
 class _TabsScreenState extends ConsumerState<TabsScreen> {
   int _selectedPageIndex = 0;
-  final List<Meal> _favouriteMeals = [];
   Map<Filter, bool> _selectedFilters = {
     Filter.glutenFree: false,
     Filter.lactoseFree: false,
@@ -26,26 +25,22 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     Filter.vegan: false,
   };
 
-  void _toggleMealFavouriteStatus(Meal meal) {
-    final isExisting = _favouriteMeals.contains(meal);
+  // Replaced by Riverpod state management
+  // final List<Meal> _favouriteMeals = [];
 
-    setState(() {
-      if (isExisting) {
-        _favouriteMeals.remove(meal);
-        _showMessage('Meal removed from favourites.');
-      } else {
-        _favouriteMeals.add(meal);
-        _showMessage('Meal added to favourites.');
-      }
-    });
-  }
+  // void _toggleMealFavouriteStatus(Meal meal) {
+  //   final isExisting = _favouriteMeals.contains(meal);
 
-  void _showMessage(String message) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
-  }
+  //   setState(() {
+  //     if (isExisting) {
+  //       _favouriteMeals.remove(meal);
+  //       _showMessage('Meal removed from favourites.');
+  //     } else {
+  //       _favouriteMeals.add(meal);
+  //       _showMessage('Meal added to favourites.');
+  //     }
+  //   });
+  // }
 
   void _selectPage(int index) {
     setState(() {
@@ -92,24 +87,15 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
       return true;
     }).toList();
 
-    Widget activePage = CategoriesScreen(
-      onToggleFavourite: _toggleMealFavouriteStatus,
-      availableMeals: availableMeals,
-    );
+    Widget activePage = CategoriesScreen(availableMeals: availableMeals);
     String activePageTitle = 'Categories';
     switch (_selectedPageIndex) {
       case 0:
-        activePage = CategoriesScreen(
-          onToggleFavourite: _toggleMealFavouriteStatus,
-          availableMeals: availableMeals,
-        );
+        activePage = CategoriesScreen(availableMeals: availableMeals);
         activePageTitle = 'Categories';
         break;
       case 1:
-        activePage = MealsScreen(
-          meals: _favouriteMeals,
-          onToggleFavourite: _toggleMealFavouriteStatus,
-        );
+        activePage = MealsScreen(meals: ref.watch(favouritesProvider));
         activePageTitle = 'Favourites';
         break;
       default:

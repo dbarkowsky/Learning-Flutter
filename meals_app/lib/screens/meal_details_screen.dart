@@ -1,21 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals_app/models/meal.dart';
+import 'package:meals_app/providers/favourites_provider.dart';
 
-class MealDetailsScreen extends StatelessWidget {
+// ConsumerWidget because Riverpod
+class MealDetailsScreen extends ConsumerWidget {
   final Meal meal;
-  final void Function(Meal meal) onToggleFavourite;
 
 
-  const MealDetailsScreen({super.key, required this.meal, required this.onToggleFavourite});
+  const MealDetailsScreen({super.key, required this.meal});
+
+   void _showMessage(bool wasAdded, BuildContext context) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(wasAdded ? 'Meal added to favourites.' : 'Meal removed from favourites.')));
+  }
 
   @override
-  Widget build(BuildContext context) {
+  // Had to add WidgetRef ref for Riverpod
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: Text(meal.title), actions: [
         IconButton(
           icon: const Icon(Icons.star),
           onPressed: () {
-            onToggleFavourite(meal);
+            // How to access the provider's notifier and call methods on it
+            bool wasAdded = ref.read(favouritesProvider.notifier).toggleMealFavourite(meal);
+            _showMessage(wasAdded, context);
           })
       ],),
       body: ListView(

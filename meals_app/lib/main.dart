@@ -13,6 +13,7 @@ final theme = ThemeData(
 );
 
 void main() {
+  // Wrap your entire app in a ProviderScope to enable Riverpod
   runApp(const ProviderScope(child: App()));
 }
 
