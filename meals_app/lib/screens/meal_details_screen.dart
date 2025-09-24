@@ -20,10 +20,11 @@ class MealDetailsScreen extends ConsumerWidget {
   @override
   // Had to add WidgetRef ref for Riverpod
   Widget build(BuildContext context, WidgetRef ref) {
+    bool isFavourite = ref.watch(favouritesProvider).contains(meal);
     return Scaffold(
       appBar: AppBar(title: Text(meal.title), actions: [
         IconButton(
-          icon: const Icon(Icons.star),
+          icon: isFavourite ? Icon(Icons.star, color: Colors.orange ) : Icon(Icons.star_border),
           onPressed: () {
             // How to access the provider's notifier and call methods on it
             bool wasAdded = ref.read(favouritesProvider.notifier).toggleMealFavourite(meal);
