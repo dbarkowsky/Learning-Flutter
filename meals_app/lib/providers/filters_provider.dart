@@ -20,9 +20,6 @@ class FiltersNotifier extends Notifier<Map<Filter, bool>> {
   }
 
   void setFilter(Filter filter, bool isActive) {
-    state = {
-      ...state,
-      filter: isActive,
-    };
+    state = {...state, filter: isActive};
   }
 }

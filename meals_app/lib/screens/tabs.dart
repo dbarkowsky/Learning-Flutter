@@ -19,7 +19,7 @@ class TabsScreen extends ConsumerStatefulWidget {
 
 class _TabsScreenState extends ConsumerState<TabsScreen> {
   int _selectedPageIndex = 0;
-  
+
   // Replaced by Riverpod state management
   // Map<Filter, bool> _selectedFilters = {
   //   Filter.glutenFree: false,
@@ -55,11 +55,10 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     // Close drawer manually
     Navigator.of(context).pop();
     if (identifier == 'filters') {
-      // Result gets the data popped from the FiltersScreen
-      final result = await Navigator.of(context).push<Map<Filter, bool>>(
-        MaterialPageRoute(
-          builder: (ctx) => FiltersScreen(),
-        ),
+      // Return value gets the data popped from the FiltersScreen
+      // No longer used with Riverpod
+      await Navigator.of(context).push<Map<Filter, bool>>(
+        MaterialPageRoute(builder: (ctx) => FiltersScreen()),
       );
       // We would do this if we weren't using Riverpod
       // setState(() {
@@ -74,22 +73,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dummyMeals = ref.watch(mealsProvider);
-    final availableMeals = dummyMeals.where((meal) {
-      // if (_selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
-      //   return false;
-      // }
-      // if (_selectedFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
-      //   return false;
-      // }
-      // if (_selectedFilters[Filter.vegetarian]! && !meal.isVegetarian) {
-      //   return false;
-      // }
-      // if (_selectedFilters[Filter.vegan]! && !meal.isVegan) {
-      //   return false;
-      // }
-      return true;
-    }).toList();
+    final availableMeals = ref.watch(filteredMealsProvider);
 
     Widget activePage = CategoriesScreen(availableMeals: availableMeals);
     String activePageTitle = 'Categories';
