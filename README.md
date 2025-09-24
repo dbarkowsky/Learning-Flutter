@@ -44,4 +44,4 @@ An app that categorizes your meals. You can filter results based on your prefere
 - Tappable UI best practices
 - Cross-screen navigation
 - Tab and Drawer navigation
-- Managing app-wide state
+- Managing app-wide state using Providers
