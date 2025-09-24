@@ -30,24 +30,27 @@ class MealsScreen extends StatelessWidget {
     }
 
     if (meals.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "No meals found.",
-              style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                color: Theme.of(context).colorScheme.primary.withAlpha(200),
+      return Scaffold(
+        appBar: AppBar(title: Text(title ?? 'Meals')),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "No meals found.",
+                style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                  color: Theme.of(context).colorScheme.primary.withAlpha(200),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              "Try selecting a different category.",
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                color: Theme.of(context).colorScheme.primary.withAlpha(200),
+              const SizedBox(height: 16),
+              Text(
+                "Try selecting a different category.",
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: Theme.of(context).colorScheme.primary.withAlpha(200),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     }

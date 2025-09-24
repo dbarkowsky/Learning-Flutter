@@ -7,17 +7,20 @@ import 'meals_screen.dart';
 
 class CategoriesScreen extends StatelessWidget {
   final void Function(Meal meal) onToggleFavourite;
+  final List<Meal> availableMeals;
 
-  const CategoriesScreen({super.key, required this.onToggleFavourite});
+  const CategoriesScreen({super.key, required this.onToggleFavourite, required this.availableMeals});
 
   void _selectCategory(BuildContext context, String categoryId) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (ctx) => MealsScreen(
-          title: 'Meals',
+          title: availableCategories
+              .firstWhere((cat) => cat.id == categoryId)
+              .title,
           // FIXME: This has O(n) complexity, which is not efficient.
-          meals: dummyMeals
+          meals: availableMeals
               .where((meal) => meal.categories.contains(categoryId))
               .toList(),
           onToggleFavourite: onToggleFavourite,

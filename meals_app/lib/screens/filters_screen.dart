@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
+enum Filter { glutenFree, lactoseFree, vegetarian, vegan }
+
 class FiltersScreen extends StatefulWidget {
-  const FiltersScreen({super.key});
+  // Why here? Keeps the state live when leaving the screen
+  final Map<Filter, bool> currentFilters;
+
+  const FiltersScreen({super.key, required this.currentFilters});
 
   @override
   State<FiltersScreen> createState() {
@@ -10,10 +15,20 @@ class FiltersScreen extends StatefulWidget {
 }
 
 class _FiltersScreenState extends State<FiltersScreen> {
-  bool _glutenFree = false;
-  bool _lactoseFree = false;
-  bool _vegetarian = false;
-  bool _vegan = false;
+  Map<Filter, bool> filters = {
+    Filter.glutenFree: false,
+    Filter.lactoseFree: false,
+    Filter.vegetarian: false,
+    Filter.vegan: false,
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize filters with currentFilters from widget
+    filters = widget.currentFilters;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,97 +44,105 @@ class _FiltersScreenState extends State<FiltersScreen> {
       //     }
       //   },
       // ),
-      body: Column(
-        children: [
-          SwitchListTile(
-            value: _glutenFree,
-            onChanged: (newValue) {
-              setState(() {
-                _glutenFree = newValue;
-              });
-            },
-            title: Text(
-              'Gluten-free',
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                color: Theme.of(context).colorScheme.primary,
+      // PopScope helps return data when popping the screen
+      body: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (bool didPop, dynamic result) {
+          if (didPop) return;
+          Navigator.of(context).pop(filters);
+        },
+        child: Column(
+          children: [
+            SwitchListTile(
+              value: filters[Filter.glutenFree]!,
+              onChanged: (newValue) {
+                setState(() {
+                  filters[Filter.glutenFree] = newValue;
+                });
+              },
+              title: Text(
+                'Gluten-free',
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
-            ),
-            subtitle: Text(
-              'Only include gluten-free meals.',
-              style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: Theme.of(context).colorScheme.secondary,
+              subtitle: Text(
+                'Only include gluten-free meals.',
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
               ),
+              activeColor: Theme.of(context).colorScheme.tertiary,
+              contentPadding: const EdgeInsets.only(left: 34, right: 22),
             ),
-            activeColor: Theme.of(context).colorScheme.tertiary,
-            contentPadding: const EdgeInsets.only(left: 34, right: 22),
-          ),
-          SwitchListTile(
-            value: _lactoseFree,
-            onChanged: (newValue) {
-              setState(() {
-                _lactoseFree = newValue;
-              });
-            },
-            title: Text(
-              'Lactose-free',
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                color: Theme.of(context).colorScheme.primary,
+            SwitchListTile(
+              value: filters[Filter.lactoseFree]!,
+              onChanged: (newValue) {
+                setState(() {
+                  filters[Filter.lactoseFree] = newValue;
+                });
+              },
+              title: Text(
+                'Lactose-free',
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
-            ),
-            subtitle: Text(
-              'Only include lactose-free meals.',
-              style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: Theme.of(context).colorScheme.secondary,
+              subtitle: Text(
+                'Only include lactose-free meals.',
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
               ),
+              activeColor: Theme.of(context).colorScheme.tertiary,
+              contentPadding: const EdgeInsets.only(left: 34, right: 22),
             ),
-            activeColor: Theme.of(context).colorScheme.tertiary,
-            contentPadding: const EdgeInsets.only(left: 34, right: 22),
-          ),
-          SwitchListTile(
-            value: _vegetarian,
-            onChanged: (newValue) {
-              setState(() {
-                _vegetarian = newValue;
-              });
-            },
-            title: Text(
-              'Vegetarian',
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                color: Theme.of(context).colorScheme.primary,
+            SwitchListTile(
+              value: filters[Filter.vegetarian]!,
+              onChanged: (newValue) {
+                setState(() {
+                  filters[Filter.vegetarian] = newValue;
+                });
+              },
+              title: Text(
+                'Vegetarian',
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
-            ),
-            subtitle: Text(
-              'Only include vegetarian meals.',
-              style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: Theme.of(context).colorScheme.secondary,
+              subtitle: Text(
+                'Only include vegetarian meals.',
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
               ),
+              activeColor: Theme.of(context).colorScheme.tertiary,
+              contentPadding: const EdgeInsets.only(left: 34, right: 22),
             ),
-            activeColor: Theme.of(context).colorScheme.tertiary,
-            contentPadding: const EdgeInsets.only(left: 34, right: 22),
-          ),
-          SwitchListTile(
-            value: _vegan,
-            onChanged: (newValue) {
-              setState(() {
-                _vegan = newValue;
-              });
-            },
-            title: Text(
-              'Vegan',
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                color: Theme.of(context).colorScheme.primary,
+            SwitchListTile(
+              value: filters[Filter.vegan]!,
+              onChanged: (newValue) {
+                setState(() {
+                  filters[Filter.vegan] = newValue;
+                });
+              },
+              title: Text(
+                'Vegan',
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
-            ),
-            subtitle: Text(
-              'Only include vegan meals.',
-              style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                color: Theme.of(context).colorScheme.secondary,
+              subtitle: Text(
+                'Only include vegan meals.',
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
               ),
+              activeColor: Theme.of(context).colorScheme.tertiary,
+              contentPadding: const EdgeInsets.only(left: 34, right: 22),
             ),
-            activeColor: Theme.of(context).colorScheme.tertiary,
-            contentPadding: const EdgeInsets.only(left: 34, right: 22),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
