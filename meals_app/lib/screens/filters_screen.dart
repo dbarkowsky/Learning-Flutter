@@ -1,32 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:meals_app/providers/filters_provider.dart';
 
-enum Filter { glutenFree, lactoseFree, vegetarian, vegan }
-
-class FiltersScreen extends StatefulWidget {
+class FiltersScreen extends ConsumerStatefulWidget {
   // Why here? Keeps the state live when leaving the screen
-  final Map<Filter, bool> currentFilters;
+  // Not needed with Riverpod
+  // final Map<Filter, bool> currentFilters;
 
-  const FiltersScreen({super.key, required this.currentFilters});
+  const FiltersScreen({super.key});
 
   @override
-  State<FiltersScreen> createState() {
+  ConsumerState<FiltersScreen> createState() {
     return _FiltersScreenState();
   }
 }
 
-class _FiltersScreenState extends State<FiltersScreen> {
-  Map<Filter, bool> filters = {
-    Filter.glutenFree: false,
-    Filter.lactoseFree: false,
-    Filter.vegetarian: false,
-    Filter.vegan: false,
-  };
-
+class _FiltersScreenState extends ConsumerState<FiltersScreen> {
+  Map<Filter, bool> filters = {};
   @override
   void initState() {
     super.initState();
+    final Map<Filter, bool> providerFilters = ref.read(filtersProvider);
+
     // Initialize filters with currentFilters from widget
-    filters = widget.currentFilters;
+    filters = providerFilters;
   }
 
   @override
@@ -49,7 +46,10 @@ class _FiltersScreenState extends State<FiltersScreen> {
         canPop: false,
         onPopInvokedWithResult: (bool didPop, dynamic result) {
           if (didPop) return;
+          // This is how to return data when popping the screen
           Navigator.of(context).pop(filters);
+          // But this sets the filters in the provider instead
+          ref.read(filtersProvider.notifier).setFilters(filters);
         },
         child: Column(
           children: [

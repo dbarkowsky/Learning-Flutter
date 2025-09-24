@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meals_app/providers/favourites_provider.dart';
+import 'package:meals_app/providers/filters_provider.dart';
 import 'package:meals_app/screens/categories_screen.dart';
 import 'package:meals_app/screens/filters_screen.dart';
 import 'package:meals_app/screens/meals_screen.dart';
@@ -18,12 +19,14 @@ class TabsScreen extends ConsumerStatefulWidget {
 
 class _TabsScreenState extends ConsumerState<TabsScreen> {
   int _selectedPageIndex = 0;
-  Map<Filter, bool> _selectedFilters = {
-    Filter.glutenFree: false,
-    Filter.lactoseFree: false,
-    Filter.vegetarian: false,
-    Filter.vegan: false,
-  };
+  
+  // Replaced by Riverpod state management
+  // Map<Filter, bool> _selectedFilters = {
+  //   Filter.glutenFree: false,
+  //   Filter.lactoseFree: false,
+  //   Filter.vegetarian: false,
+  //   Filter.vegan: false,
+  // };
 
   // Replaced by Riverpod state management
   // final List<Meal> _favouriteMeals = [];
@@ -55,16 +58,17 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
       // Result gets the data popped from the FiltersScreen
       final result = await Navigator.of(context).push<Map<Filter, bool>>(
         MaterialPageRoute(
-          builder: (ctx) => FiltersScreen(currentFilters: _selectedFilters),
+          builder: (ctx) => FiltersScreen(),
         ),
       );
-      setState(() {
-        // If the result is null, do not update filters
-        if (result == null) {
-          return;
-        }
-        _selectedFilters = result;
-      });
+      // We would do this if we weren't using Riverpod
+      // setState(() {
+      //   // If the result is null, do not update filters
+      //   if (result == null) {
+      //     return;
+      //   }
+      //   _selectedFilters = result;
+      // });
     }
   }
 
@@ -72,18 +76,18 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   Widget build(BuildContext context) {
     final dummyMeals = ref.watch(mealsProvider);
     final availableMeals = dummyMeals.where((meal) {
-      if (_selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
-        return false;
-      }
-      if (_selectedFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
-        return false;
-      }
-      if (_selectedFilters[Filter.vegetarian]! && !meal.isVegetarian) {
-        return false;
-      }
-      if (_selectedFilters[Filter.vegan]! && !meal.isVegan) {
-        return false;
-      }
+      // if (_selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
+      //   return false;
+      // }
+      // if (_selectedFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
+      //   return false;
+      // }
+      // if (_selectedFilters[Filter.vegetarian]! && !meal.isVegetarian) {
+      //   return false;
+      // }
+      // if (_selectedFilters[Filter.vegan]! && !meal.isVegan) {
+      //   return false;
+      // }
       return true;
     }).toList();
 
