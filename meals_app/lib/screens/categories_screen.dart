@@ -80,10 +80,26 @@ class _CategoriesScreenState extends State<CategoriesScreen>
       ),
       // The builder is called every time the animation changes
       // So this is where the animation is applied
-      builder: (context, child) => Padding(
-        // This causes the padding widget to slide up from bottom
-        padding: EdgeInsets.only(top: 100 - _animationController.value * 100),
-        child: child,
+      // builder: (context, child) => Padding(
+      //   // This causes the padding widget to slide up from bottom
+      //   padding: EdgeInsets.only(top: 100 - _animationController.value * 100),
+      //   child: child,
+      // ),
+      // This is a more complex animation that combines fade and slide
+      builder: (context, child) => SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0, 0.5),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeInOut,
+          ),
+        ),
+        child: FadeTransition(
+          opacity: _animationController,
+          child: child,
+        ),
       ),
     );
   }
