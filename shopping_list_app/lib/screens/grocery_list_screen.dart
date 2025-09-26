@@ -24,6 +24,10 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     });
   }
 
+  void _removeItem(GroceryItem item) {
+    _groceryItems.remove(item);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +36,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         actions: [IconButton(onPressed: _addItem, icon: const Icon(Icons.add))],
       ),
       body: _groceryItems.isNotEmpty
-          ? GroceryList(items: _groceryItems)
+          ? GroceryList(items: _groceryItems, onRemoveItem: _removeItem,)
           : const Center(child: Text('Your grocery list is empty.')),
     );
   }
