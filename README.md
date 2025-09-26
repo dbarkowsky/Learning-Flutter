@@ -46,3 +46,10 @@ An app that categorizes your meals. You can filter results based on your prefere
 - Tab and Drawer navigation
 - Managing app-wide state using Providers
 - Animations and transitions
+
+## `shopping_list_app`
+
+Put in your shopping list items so you don't forget them!
+
+- Using the Flutter Form widget
+- Validating form input and accessing form data
