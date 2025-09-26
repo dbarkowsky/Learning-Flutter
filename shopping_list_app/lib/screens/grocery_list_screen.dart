@@ -14,10 +14,14 @@ class GroceryListScreen extends StatefulWidget {
 class _GroceryListScreenState extends State<GroceryListScreen> {
   final List<GroceryItem> _groceryItems = [...groceryItems];
 
-  void _addItem() {
-    Navigator.of(
+  void _addItem() async {
+    final GroceryItem? item = await Navigator.of(
       context,
     ).push(MaterialPageRoute(builder: (ctx) => const NewItem()));
+    if (item == null) return;
+    setState(() {
+      _groceryItems.add(item);
+    });
   }
 
   @override
@@ -28,7 +32,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         actions: [IconButton(onPressed: _addItem, icon: const Icon(Icons.add))],
       ),
       body: _groceryItems.isNotEmpty
-          ? GroceryList(items: groceryItems)
+          ? GroceryList(items: _groceryItems)
           : const Center(child: Text('Your grocery list is empty.')),
     );
   }
