@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shopping_list_app/data/categories.dart';
 import 'package:shopping_list_app/models/category.dart';
 import 'package:shopping_list_app/models/grocery_item.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
@@ -16,21 +20,39 @@ class _NewItemState extends State<NewItem> {
   // Also keeps form from being rebuilt, keeping internal state.
   final _formKey = GlobalKey<FormState>();
 
-  void _addItem() {
+  void _addItem() async {
     // Manually trigger validation of entire form.
     bool isValid = _formKey.currentState!.validate();
     if (isValid) {
       // Just triggers onSave function on form fields.
       _formKey.currentState!.save();
-      // Return value to previous screen
-      Navigator.of(context).pop(
-        GroceryItem(
-          id: DateTime.now().toString(),
-          name: _formValues['name'],
-          quantity: _formValues['quantity'],
-          category: _formValues['category'],
-        ),
+      GroceryItem item = GroceryItem(
+        id: DateTime.now().toString(),
+        name: _formValues['name'],
+        quantity: _formValues['quantity'],
+        category: _formValues['category'],
       );
+      // Send to backend
+      // NOTE: Firebase requires the .json ending.
+      final response = await http.post(
+        Uri.https(
+          dotenv.env['FIREBASE_URI']!,
+          'shopping-list.json',
+        ),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'id': item.id,
+          'name': item.name,
+          'quantity': item.quantity,
+          'category': item.category.name,
+        }),
+      );
+      // Return value to previous screen
+      // Check if still mounted aka still visable first
+      if (!context.mounted) {
+        return;
+      }
+      Navigator.of(context).pop(item);
     }
   }
 
