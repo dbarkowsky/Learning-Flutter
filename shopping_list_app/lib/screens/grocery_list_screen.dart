@@ -18,6 +18,7 @@ class GroceryListScreen extends StatefulWidget {
 class _GroceryListScreenState extends State<GroceryListScreen> {
   List<GroceryItem> _groceryItems = [];
   bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -26,30 +27,54 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   }
 
   void _getItems() async {
-    // Get data from Firebase
-    final response = await http.get(
-      Uri.https(dotenv.env['FIREBASE_URI']!, 'shopping-list.json'),
-    );
-    // Set state with these items
-    final Map<String, dynamic> listData = json.decode(response.body);
-    List<GroceryItem> tempList = [];
-    for (final item in listData.entries) {
-      final category = categories.entries
-          .firstWhere((cat) => cat.value.name == item.value['category'])
-          .value;
-      tempList.add(
-        GroceryItem(
-          id: item.key,
-          name: item.value['name'],
-          quantity: item.value['quantity'],
-          category: category,
-        ),
+    try {
+      // Get data from Firebase
+      final response = await http.get(
+        Uri.https(dotenv.env['FIREBASE_URI']!, 'shopping-list.json'),
       );
+      // Error checking
+      if (response.statusCode >= 400) {
+        setState(() {
+          _error = 'Failed to fetch.';
+          _isLoading = false;
+        });
+      }
+
+      // Possible that no data in Firebase
+      // It sends a string like this if so
+      if (response.body == 'null') {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
+      // Set state with these items
+      final Map<String, dynamic> listData = json.decode(response.body);
+      List<GroceryItem> tempList = [];
+      for (final item in listData.entries) {
+        final category = categories.entries
+            .firstWhere((cat) => cat.value.name == item.value['category'])
+            .value;
+        tempList.add(
+          GroceryItem(
+            id: item.key,
+            name: item.value['name'],
+            quantity: item.value['quantity'],
+            category: category,
+          ),
+        );
+      }
+      setState(() {
+        _groceryItems = tempList;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = 'Something went wrong';
+        _isLoading = false;
+      });
     }
-    setState(() {
-      _groceryItems = tempList;
-      _isLoading = false;
-    });
   }
 
   void _addItem() async {
@@ -63,8 +88,17 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     });
   }
 
-  void _removeItem(GroceryItem item) {
-    _groceryItems.remove(item);
+  void _removeItem(GroceryItem item) async {
+    final response = await http.delete(
+      Uri.https(dotenv.env['FIREBASE_URI']!, 'shopping-list/${item.id}.json'),
+    );
+    if (response.statusCode >= 400) {
+      _error = 'Failed to delete';
+      return;
+    }
+    setState(() {
+      _groceryItems.remove(item);
+    });
   }
 
   @override
@@ -74,7 +108,10 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         title: const Text('Your Groceries'),
         actions: [IconButton(onPressed: _addItem, icon: const Icon(Icons.add))],
       ),
-      body: _isLoading
+      // Behold this horrible ternary mess.
+      body: _error != null
+          ? Center(child: (Text(_error!)))
+          : _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _groceryItems.isNotEmpty
           ? GroceryList(items: _groceryItems, onRemoveItem: _removeItem)
