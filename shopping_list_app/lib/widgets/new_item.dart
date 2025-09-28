@@ -52,7 +52,7 @@ class _NewItemState extends State<NewItem> {
       if (!context.mounted) {
         return;
       }
-      Navigator.of(context).pop(item);
+      Navigator.of(context).pop();
     }
   }
 
