@@ -26,7 +26,7 @@ class _NewItemState extends State<NewItem> {
     if (isValid) {
       // Just triggers onSave function on form fields.
       _formKey.currentState!.save();
-      GroceryItem item = GroceryItem(
+      GroceryItem tempItem = GroceryItem(
         id: DateTime.now().toString(),
         name: _formValues['name'],
         quantity: _formValues['quantity'],
@@ -35,16 +35,12 @@ class _NewItemState extends State<NewItem> {
       // Send to backend
       // NOTE: Firebase requires the .json ending.
       final response = await http.post(
-        Uri.https(
-          dotenv.env['FIREBASE_URI']!,
-          'shopping-list.json',
-        ),
+        Uri.https(dotenv.env['FIREBASE_URI']!, 'shopping-list.json'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
-          'id': item.id,
-          'name': item.name,
-          'quantity': item.quantity,
-          'category': item.category.name,
+          'name': tempItem.name,
+          'quantity': tempItem.quantity,
+          'category': tempItem.category.name,
         }),
       );
       // Return value to previous screen
@@ -52,7 +48,17 @@ class _NewItemState extends State<NewItem> {
       if (!context.mounted) {
         return;
       }
-      Navigator.of(context).pop();
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      Navigator.of(context).pop(
+        GroceryItem(
+          // This name is not the same as the GroceryItem name.
+          // name is the property with the unique key created by Firebase
+          id: responseData['name'],
+          name: tempItem.name,
+          quantity: tempItem.quantity,
+          category: tempItem.category,
+        ),
+      );
     }
   }
 
