@@ -20,10 +20,13 @@ class _NewItemState extends State<NewItem> {
   // Also keeps form from being rebuilt, keeping internal state.
   final _formKey = GlobalKey<FormState>();
 
+  bool _isSending = false;
+
   void _addItem() async {
     // Manually trigger validation of entire form.
     bool isValid = _formKey.currentState!.validate();
     if (isValid) {
+      _isSending = true;
       // Just triggers onSave function on form fields.
       _formKey.currentState!.save();
       GroceryItem tempItem = GroceryItem(
@@ -46,6 +49,7 @@ class _NewItemState extends State<NewItem> {
       // Return value to previous screen
       // Check if still mounted aka still visable first
       if (!context.mounted) {
+        _isSending = false;
         return;
       }
       final Map<String, dynamic> responseData = json.decode(response.body);
@@ -158,7 +162,17 @@ class _NewItemState extends State<NewItem> {
                     },
                     child: Text('Reset'),
                   ),
-                  ElevatedButton(onPressed: _addItem, child: Text('Submit')),
+                  ElevatedButton(
+                    // Null will disable button
+                    onPressed: _isSending ? null : _addItem,
+                    child: _isSending
+                        ? SizedBox(
+                            height: 16,
+                            width: 16,
+                            child: CircularProgressIndicator(),
+                          )
+                        : Text('Submit'),
+                  ),
                 ],
               ),
             ],

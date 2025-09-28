@@ -17,6 +17,7 @@ class GroceryListScreen extends StatefulWidget {
 
 class _GroceryListScreenState extends State<GroceryListScreen> {
   List<GroceryItem> _groceryItems = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -47,6 +48,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     }
     setState(() {
       _groceryItems = tempList;
+      _isLoading = false;
     });
   }
 
@@ -72,7 +74,9 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         title: const Text('Your Groceries'),
         actions: [IconButton(onPressed: _addItem, icon: const Icon(Icons.add))],
       ),
-      body: _groceryItems.isNotEmpty
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _groceryItems.isNotEmpty
           ? GroceryList(items: _groceryItems, onRemoveItem: _removeItem)
           : const Center(child: Text('Your grocery list is empty.')),
     );
