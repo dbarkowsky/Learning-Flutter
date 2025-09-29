@@ -53,3 +53,11 @@ Put in your shopping list items so you don't forget them!
 
 - Using the Flutter Form widget
 - Validating form input and accessing form data
+- HTTP requests
+
+## `favourite_places_app`
+
+- Image picker and camera access
+- Device location services
+- Google Maps integration
+- On-device storage, including SQLite
