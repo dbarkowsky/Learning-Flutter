@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AddPlaceScreen extends ConsumerStatefulWidget {
+  const AddPlaceScreen({super.key});
+
   @override
   ConsumerState<AddPlaceScreen> createState() {
     return _AddPlaceScreenState();
