@@ -37,7 +37,9 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   }
 
   void _setImage(File f) {
-    image = f;
+    setState(() {
+      image = f;
+    });
   }
 
   @override

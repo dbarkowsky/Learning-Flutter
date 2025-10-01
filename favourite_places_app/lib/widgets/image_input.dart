@@ -18,16 +18,17 @@ class _ImageInputState extends State<ImageInput> {
 
   void _takePicture() async {
     final imagePicker = ImagePicker();
-    // I never had this actually work. Emulator seems to be incompatible.
+    // This is finicky in the emulator. Settings have to be just right.
     final image = await imagePicker.pickImage(
       source: ImageSource.camera,
       maxWidth: 600,
     );
-    print(image);
+
     if (image != null) {
-      setState(() {
         widget.onChooseImage(File(image.path));
-      });
+        setState(() {
+          _selectedImage = File(image.path);
+        });
     }
   }
 
