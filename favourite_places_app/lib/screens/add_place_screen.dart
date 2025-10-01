@@ -1,5 +1,6 @@
 import 'package:favourite_places_app/models/place.dart';
 import 'package:favourite_places_app/providers/places_provider.dart';
+import 'package:favourite_places_app/widgets/image_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,9 +22,9 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
     super.dispose();
   }
 
-  void _savePlace(){
+  void _savePlace() {
     final enteredTitle = _titleController.text;
-    if (enteredTitle.isEmpty){
+    if (enteredTitle.isEmpty) {
       return;
     }
     ref.read(placesProvider.notifier).addPlace(Place(title: enteredTitle));
@@ -41,13 +42,17 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
             TextField(
               controller: _titleController,
               decoration: InputDecoration(labelText: 'Title'),
-              style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
             ),
+            const SizedBox(height: 10),
+            ImageInput(),
             const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: _savePlace,
               label: const Text('Save'),
-              icon: Icon(Icons.add),
+              icon: Icon(Icons.save),
             ),
           ],
         ),
