@@ -18,18 +18,25 @@ class PlaceList extends StatelessWidget {
         ),
       );
     }
-    return ListView(
-      children: [
-        for (final p in places)
-          ListTile(
-            title: Text(p.title),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (ctx) => PlaceDetails(place: p)),
-              );
-            },
-          ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView(
+        children: [
+          for (final p in places)
+            ListTile(
+              title: Text(p.title),
+              leading: CircleAvatar(
+                radius: 26,
+                backgroundImage: FileImage(p.image),
+              ),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (ctx) => PlaceDetails(place: p)),
+                );
+              },
+            ),
+        ],
+      ),
     );
   }
 }
