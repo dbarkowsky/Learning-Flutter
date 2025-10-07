@@ -31,9 +31,12 @@ class PlaceDetails extends StatelessWidget {
               child: FlutterMap(
                 mapController: controller,
                 options: MapOptions(
-                  onMapReady: (){
-                    controller.move(place.location, 10);
-                  },
+                  initialCenter: place.location,
+                  initialZoom: 10,
+                  interactionOptions: InteractionOptions(
+                    // Some interesting bitwise logic to prevent certain behaviours
+                    flags: ~InteractiveFlag.drag & ~InteractiveFlag.doubleTapZoom
+                  )
                 ),
                 children: [
                   TileLayer(
