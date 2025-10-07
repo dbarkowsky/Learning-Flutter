@@ -5,7 +5,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 
 class LocationInput extends StatefulWidget {
-  const LocationInput({super.key});
+  final void Function(LatLng location) onChooseLocation;
+  const LocationInput({super.key, required this.onChooseLocation});
 
   @override
   State<LocationInput> createState() {
@@ -18,12 +19,13 @@ class _LocationInputState extends State<LocationInput> {
   LocationData? _locationData;
   MapController? _mapController;
   SmallMap? _map;
+  List<Marker> _markers = [];
 
   @override
   void initState() {
     super.initState();
     _mapController = MapController();
-    _map = SmallMap(controller: _mapController!);
+    _map = SmallMap(controller: _mapController!, markers: _markers);
   }
 
   _getCurrentLocation() async {
@@ -57,7 +59,21 @@ class _LocationInputState extends State<LocationInput> {
 
     setState(() {
       if (_locationData != null && _mapController != null) {
-        _mapController!.move(LatLng(_locationData!.latitude!, _locationData!.longitude!), 18);
+        print(_locationData);
+        _mapController!.move(
+          LatLng(_locationData!.latitude!, _locationData!.longitude!),
+          18,
+        );
+        _markers = []; // Clear it
+        _markers.add(
+          Marker(
+            point: LatLng(_locationData!.latitude!, _locationData!.longitude!),
+            width: 60,
+            height: 60,
+            child: FlutterLogo(),
+          ),
+        );
+        widget.onChooseLocation(LatLng(_locationData!.latitude!, _locationData!.longitude!));
       }
       _isGettingLocation = false;
     });
@@ -65,21 +81,22 @@ class _LocationInputState extends State<LocationInput> {
 
   @override
   Widget build(BuildContext context) {
-    Widget childContent = Text(
-      "No location chosen",
-      textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-        color: Theme.of(context).colorScheme.onSecondary,
-      ),
-    );
+    // Could keep the spinner while loading if we changed the map to a stack
+    // Widget childContent = Text(
+    //   "No location chosen",
+    //   textAlign: TextAlign.center,
+    //   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+    //     color: Theme.of(context).colorScheme.onSecondary,
+    //   ),
+    // );
 
-    if (_isGettingLocation) {
-      childContent = CircularProgressIndicator();
-    }
+    // if (_isGettingLocation) {
+    //   childContent = CircularProgressIndicator();
+    // }
 
-    if (_locationData != null && _map != null){
-      childContent = _map!;
-    }
+    // if (_locationData != null && _map != null) {
+    //   childContent = _map!;
+    // }
 
     return Column(
       children: [
@@ -93,7 +110,7 @@ class _LocationInputState extends State<LocationInput> {
               color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          child: childContent,
+          child: _map,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -104,7 +121,10 @@ class _LocationInputState extends State<LocationInput> {
               icon: Icon(Icons.location_on),
             ),
             TextButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                // I didn't bother with this, but the flutter_map package has methods for user interaction.
+                // This could open a new screen that's just map, wait for the tap and confirmation, then return that location.
+              },
               label: Text("Select on Map"),
               icon: Icon(Icons.map),
             ),
