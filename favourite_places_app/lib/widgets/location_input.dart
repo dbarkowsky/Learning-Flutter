@@ -1,4 +1,7 @@
+import 'package:favourite_places_app/widgets/small_map.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 
 class LocationInput extends StatefulWidget {
@@ -12,6 +15,16 @@ class LocationInput extends StatefulWidget {
 
 class _LocationInputState extends State<LocationInput> {
   bool _isGettingLocation = false;
+  LocationData? _locationData;
+  MapController? _mapController;
+  SmallMap? _map;
+
+  @override
+  void initState() {
+    super.initState();
+    _mapController = MapController();
+    _map = SmallMap(controller: _mapController!);
+  }
 
   _getCurrentLocation() async {
     setState(() {
@@ -22,7 +35,6 @@ class _LocationInputState extends State<LocationInput> {
     // Some template code to check if we have location permissions/access
     bool serviceEnabled;
     PermissionStatus permissionGranted;
-    LocationData _locationData;
 
     serviceEnabled = await location.serviceEnabled();
     if (!serviceEnabled) {
@@ -42,16 +54,18 @@ class _LocationInputState extends State<LocationInput> {
 
     // Request current location
     _locationData = await location.getLocation();
-    print(_locationData);
 
     setState(() {
+      if (_locationData != null && _mapController != null) {
+        _mapController!.move(LatLng(_locationData!.latitude!, _locationData!.longitude!), 18);
+      }
       _isGettingLocation = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget _childContent = Text(
+    Widget childContent = Text(
       "No location chosen",
       textAlign: TextAlign.center,
       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -59,8 +73,12 @@ class _LocationInputState extends State<LocationInput> {
       ),
     );
 
-    if (_isGettingLocation){
-      _childContent = CircularProgressIndicator();
+    if (_isGettingLocation) {
+      childContent = CircularProgressIndicator();
+    }
+
+    if (_locationData != null && _map != null){
+      childContent = _map!;
     }
 
     return Column(
@@ -75,7 +93,7 @@ class _LocationInputState extends State<LocationInput> {
               color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          child: _childContent,
+          child: childContent,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
