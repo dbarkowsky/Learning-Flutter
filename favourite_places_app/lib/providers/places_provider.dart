@@ -56,6 +56,7 @@ class PlacesProvider extends Notifier<List<Place>> {
     // Save the image to the device
     final appDir = await syspaths.getApplicationDocumentsDirectory();
     final fileName = path.basename(p.image.path);
+    // This seems to cause some issues in the emulator. :(
     File imageFile = await p.image.copy('${appDir.path}/$fileName');
 
     Place placeWithLocalImage = Place(

@@ -57,7 +57,11 @@ Put in your shopping list items so you don't forget them!
 
 ## `favourite_places_app`
 
+Store your favourite places, including attaching pictures and location data.
+
 - Image picker and camera access
 - Device location services
-- Google Maps integration
+- Use of flutter_maps and OpenMaps
 - On-device storage, including SQLite
+
+## `chat_app`
